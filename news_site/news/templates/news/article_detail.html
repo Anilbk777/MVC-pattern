@@ -8,9 +8,9 @@
         <div class="col-lg-8">
             <!-- Article Content -->
             <article class="card border-0 shadow-sm mb-4">
-                {% if article.image %}
-                <img src="{{ article.image }}" class="card-img-top" style="height: 400px; object-fit: cover;">
-                {% endif %}
+               {% if article.image %}
+  <img src="{{ article.image.url }}" alt="{{ article.title }}" style="max-width: 100%; height: auto;" />
+{% endif %}
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <span class="badge bg-primary fs-6">{{ article.category.name }}</span>

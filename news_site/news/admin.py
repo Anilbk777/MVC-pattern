@@ -15,12 +15,13 @@ class ArticleAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     date_hierarchy = 'published_at'
     ordering = ['-published_at']
-    
+
     fieldsets = (
         ('Article Info', {
             'fields': ('title', 'slug', 'author', 'category')
         }),
         ('Content', {
+            # CHANGED: show 'image' as file upload
             'fields': ('excerpt', 'content', 'image')
         }),
         ('Publishing', {
@@ -34,7 +35,7 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ['active', 'created_at']
     search_fields = ['name', 'email', 'content']
     actions = ['approve_comments']
-    
+
     def approve_comments(self, request, queryset):
         queryset.update(active=True)
     approve_comments.short_description = "Approve selected comments"
