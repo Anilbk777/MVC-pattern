@@ -1,0 +1,102 @@
+{% extends 'news/base.html' %}
+
+{% block title %}{{ article.title }} - NewsHub{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Article Content -->
+            <article class="card border-0 shadow-sm mb-4">
+                {% if article.image %}
+                <img src="{{ article.image }}" class="card-img-top" style="height: 400px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-primary fs-6">{{ article.category.name }}</span>
+                        <div class="text-muted">
+                            <i class="fas fa-calendar"></i> {{ article.published_at|date:"F d, Y" }}
+                            <span class="mx-2">•</span>
+                            <i class="fas fa-eye"></i> {{ article.views }} views
+                        </div>
+                    </div>
+                    
+                    <h1 class="card-title mb-3">{{ article.title }}</h1>
+                    
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="me-3">
+                            <i class="fas fa-user-circle fa-2x text-muted"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0">{{ article.author.get_full_name|default:article.author.username }}</h6>
+                            <small class="text-muted">Published {{ article.published_at|date:"F d, Y" }}</small>
+                        </div>
+                    </div>
+                    
+                    <div class="article-content">
+                        {{ article.content|linebreaks }}
+                    </div>
+                </div>
+            </article>
+
+            <!-- Comments Section -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-comments"></i> Comments ({{ comments.count }})</h5>
+                </div>
+                <div class="card-body">
+                    {% for comment in comments %}
+                    <div class="mb-3 {% if not forloop.last %}border-bottom pb-3{% endif %}">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0">{{ comment.name }}</h6>
+                            <small class="text-muted">{{ comment.created_at|date:"M d, Y H:i" }}</small>
+                        </div>
+                        <p class="mb-0">{{ comment.content|linebreaks }}</p>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted">No comments yet. Be the first to comment!</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Related Articles -->
+            {% if related_articles %}
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-newspaper"></i> Related Articles</h5>
+                </div>
+                <div class="card-body">
+                    {% for related in related_articles %}
+                    <div class="d-flex mb-3 {% if not forloop.last %}border-bottom pb-3{% endif %}">
+                        {% if related.image %}
+                        <img src="{{ related.image }}" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                        {% endif %}
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">
+                                <a href="{{ related.get_absolute_url }}" class="text-decoration-none text-dark">
+                                    {{ related.title|truncatechars:50 }}
+                                </a>
+                            </h6>
+                            <small class="text-muted">{{ related.published_at|date:"M d, Y" }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Back to Category -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <a href="{{ article.category.get_absolute_url }}" class="btn btn-primary">
+                        <i class="fas fa-arrow-left"></i> More {{ article.category.name }} Articles
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}   
