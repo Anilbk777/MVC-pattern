@@ -1,4 +1,5 @@
 {% extends 'news/base.html' %}
+{% load static %}
 
 {% block title %}{{ article.title }} - NewsHub{% endblock %}
 
@@ -8,9 +9,12 @@
         <div class="col-lg-8">
             <!-- Article Content -->
             <article class="card border-0 shadow-sm mb-4">
-               {% if article.image %}
-  <img src="{{ article.image.url }}" alt="{{ article.title }}" style="max-width: 100%; height: auto;" />
-{% endif %}
+                {% if article.image %}
+                <img src="{{ article.image.url }}" alt="{{ article.title }}">
+                {% else %}
+                <!-- Optional: Show a placeholder if there is no image -->
+                <img src="{% static 'default.png' %}" alt="No image available">
+                {% endif %}
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <span class="badge bg-primary fs-6">{{ article.category.name }}</span>
@@ -20,9 +24,9 @@
                             <i class="fas fa-eye"></i> {{ article.views }} views
                         </div>
                     </div>
-                    
+
                     <h1 class="card-title mb-3">{{ article.title }}</h1>
-                    
+
                     <div class="d-flex align-items-center mb-4">
                         <div class="me-3">
                             <i class="fas fa-user-circle fa-2x text-muted"></i>
@@ -32,7 +36,7 @@
                             <small class="text-muted">Published {{ article.published_at|date:"F d, Y" }}</small>
                         </div>
                     </div>
-                    
+
                     <div class="article-content">
                         {{ article.content|linebreaks }}
                     </div>
@@ -71,8 +75,11 @@
                 <div class="card-body">
                     {% for related in related_articles %}
                     <div class="d-flex mb-3 {% if not forloop.last %}border-bottom pb-3{% endif %}">
-                        {% if related.image %}
-                        <img src="{{ related.image }}" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                        {% if article.image %}
+                        <img src="{{ article.image.url }}" alt="{{ article.title }}">
+                        {% else %}
+                        <!-- Optional: Show a placeholder if there is no image -->
+                        <img src="{% static 'default.png' %}" alt="No image available">
                         {% endif %}
                         <div class="flex-grow-1">
                             <h6 class="mb-1">
@@ -99,4 +106,4 @@
         </div>
     </div>
 </div>
-{% endblock %}   
+{% endblock %}

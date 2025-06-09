@@ -1,4 +1,5 @@
 {% extends 'news/base.html' %}
+{% load static %}
 
 {% block title %}Latest News - NewsHub{% endblock %}
 
@@ -10,7 +11,12 @@
         <div class="col-12">
             <div class="card border-0 shadow-sm">
                 {% if featured_article.image %}
-                <img src="{{ featured_article.image }}" class="card-img-top" style="height: 400px; object-fit: cover;">
+                <img src="{{ featured_article.image.url }}" alt="{{ featured_article.title }}" class="img-fluid rounded"
+                    style="max-height: 300px; width: auto; object-fit: cover;">
+                {% else %}
+                <!-- Optional: Show a placeholder if there is no image -->
+                <img src="{% static 'default.png' %}" alt="No image available" class="img-fluid rounded"
+                    style="max-height: 300px; width: auto; object-fit: cover;">
                 {% endif %}
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
@@ -27,7 +33,10 @@
                     <p class="card-text text-muted">{{ featured_article.excerpt }}</p>
                     <div class="d-flex justify-content-between align-items-center">
                         <small class="text-muted">
-                            <i class="fas fa-user"></i> {{ featured_article.author.get_full_name|default:featured_article.author.username }}
+                            <i class="fas fa-user"></i>
+                            {% with full_name=featured_article.author.get_full_name %}
+                            {{ full_name|default:featured_article.author.username }}
+                            {% endwith %}
                         </small>
                         <small class="text-muted">
                             <i class="fas fa-eye"></i> {{ featured_article.views }} views
@@ -48,7 +57,10 @@
                 <div class="col-md-6 mb-4">
                     <div class="card h-100 border-0 shadow-sm">
                         {% if article.image %}
-                        <img src="{{ article.image }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                        <img src="{{ article.image.url }}" alt="{{ article.title }}">
+                        {% else %}
+                        <!-- Optional: Show a placeholder if there is no image -->
+                        <img src="{% static 'default.png' %}" alt="No image available">
                         {% endif %}
                         <div class="card-body d-flex flex-column">
                             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -62,7 +74,7 @@
                             </h5>
                             <p class="card-text flex-grow-1">{{ article.excerpt|truncatechars:100 }}</p>
                             <small class="text-muted mt-auto">
-                                <i class="fas fa-user"></i> {{ article.author.username }} • 
+                                <i class="fas fa-user"></i> {{ article.author.username }} •
                                 <i class="fas fa-eye"></i> {{ article.views }}
                             </small>
                         </div>
@@ -87,7 +99,10 @@
                     {% for article in popular_articles %}
                     <div class="d-flex mb-3 {% if not forloop.last %}border-bottom pb-3{% endif %}">
                         {% if article.image %}
-                        <img src="{{ article.image }}" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                        <img src="{{ article.image.url }}" alt="{{ article.title }}">
+                        {% else %}
+                        <!-- Optional: Show a placeholder if there is no image -->
+                        <img src="{% static 'default.png' %}" alt="No image available">
                         {% endif %}
                         <div class="flex-grow-1">
                             <h6 class="mb-1">
@@ -124,4 +139,4 @@
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}
