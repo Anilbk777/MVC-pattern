@@ -1,27 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.utils.text import slugify
 from .models import Article, Category, Comment
 from .forms import ArticleForm
 
 def home(request):
-    """Home page showing latest articles"""
+    """Home page showing all articles in a grid"""
     articles = Article.objects.filter(status='published').select_related('author', 'category')
     categories = Category.objects.all()
-
-    # Featured article (most recent)
-    featured_article = articles.first()
-
-    # Latest articles (excluding featured)
-    latest_articles = articles[1:9]  # Get next 8 articles
-
-    # Popular articles (by views)
-    popular_articles = articles.order_by('-views')[:5]
-
     context = {
-        'featured_article': featured_article,
-        'latest_articles': latest_articles,
-        'popular_articles': popular_articles,
+        'articles': articles,
         'categories': categories,
     }
     return render(request, 'news/home.html', context)
@@ -46,6 +35,7 @@ def article_detail(request, slug):
         'article': article,
         'related_articles': related_articles,
         'comments': comments,
+        'can_edit': True,  # Always allow edit/delete for unauthenticated CRUD
     }
     return render(request, 'news/article_detail.html', context)
 
@@ -92,8 +82,33 @@ def article_create(request):
     if request.method == "POST":
         form = ArticleForm(request.POST, request.FILES)
         if form.is_valid():
-            article = form.save()
+            article = form.save(commit=False)
+            # Auto-generate slug from title (always, since not in form)
+            from django.utils.text import slugify
+            article.slug = slugify(article.title)
+            # Always set status to published
+            article.status = 'published'
+            article.save()
+            form.save_m2m()
             return redirect(article.get_absolute_url())
     else:
         form = ArticleForm()
     return render(request, 'news/article_form.html', {'form': form})
+
+def article_update(request, slug):
+    article = get_object_or_404(Article, slug=slug)
+    if request.method == "POST":
+        form = ArticleForm(request.POST, request.FILES, instance=article)
+        if form.is_valid():
+            form.save()
+            return redirect(article.get_absolute_url())
+    else:
+        form = ArticleForm(instance=article)
+    return render(request, 'news/article_form.html', {'form': form, 'article': article, 'update': True})
+
+def article_delete(request, slug):
+    article = get_object_or_404(Article, slug=slug)
+    if request.method == "POST":
+        article.delete()
+        return redirect('news:home')
+    return render(request, 'news/article_confirm_delete.html', {'article': article})

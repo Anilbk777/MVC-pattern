@@ -1,0 +1,35 @@
+{% extends "news/base.html" %}
+
+{% block content %}
+<!-- Delete Confirmation Modal -->
+<div class="modal fade show" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-modal="true"
+  style="display: block; background: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+        <a href="{{ article.get_absolute_url }}" class="btn-close" aria-label="Close"></a>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete "{{ article.title }}"?
+      </div>
+      <div class="modal-footer">
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Confirm Delete</button>
+        </form>
+        <a href="{{ article.get_absolute_url }}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  // Redirect to article page if modal is closed
+  document.addEventListener('DOMContentLoaded', function () {
+    var modal = document.getElementById('deleteModal');
+    modal.addEventListener('hidden.bs.modal', function () {
+      window.location.href = "{{ article.get_absolute_url }}";
+    });
+  });
+</script>
+{% endblock %}

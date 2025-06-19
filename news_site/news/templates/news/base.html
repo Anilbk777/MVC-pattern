@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -14,11 +16,11 @@
             <a class="navbar-brand fw-bold" href="{% url 'news:home' %}">
                 <i class="fas fa-newspaper"></i> NewsHub
             </a>
-            
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
@@ -30,14 +32,18 @@
                     </li>
                     {% endfor %}
                 </ul>
-                
-                <!-- Search Form -->
-                <form class="d-flex" method="GET" action="{% url 'news:search' %}">
-                    <input class="form-control me-2" type="search" name="q" placeholder="Search news..." 
-                           value="{{ request.GET.q }}">
-                    <button class="btn btn-outline-light" type="submit">
+
+                <!-- Search Form and Upload Button Side by Side -->
+                <form class="d-flex align-items-center gap-2" method="GET" action="{% url 'news:search' %}">
+                    <input class="form-control me-2" type="search" name="q" placeholder="Search news..."
+                        value="{{ request.GET.q }}" style="min-width: 180px;">
+                    <button class="btn btn-outline-light me-2" type="submit" title="Search">
                         <i class="fas fa-search"></i>
                     </button>
+                    <a href="{% url 'news:article_create' %}" class="btn btn-success fw-bold d-flex align-items-center"
+                        style="white-space: nowrap;">
+                        <i class="fas fa-plus me-1"></i> Upload Article
+                    </a>
                 </form>
             </div>
         </div>
@@ -66,4 +72,5 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
