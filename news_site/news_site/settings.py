@@ -23,10 +23,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-gvii4z%t^h&gu)ruchdkh0a!p$*=t&#dw@r^=o##5l0k@i=e@e"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
 # ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['*']
+DEBUG = False
+ALLOWED_HOSTS = ['.onrender.com']
 
 
 # Application definition
@@ -128,7 +129,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-import dj_database_url
-import os
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-DATABASES['default'] = dj_database_url.config(default=os.environ.get('DATABASE_URL'))
+
